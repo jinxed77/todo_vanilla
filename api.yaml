@@ -1,0 +1,105 @@
+openapi: 3.0.0
+info:
+  title: Todo List API
+  version: 1.0.0
+  description: API для работы с задачами в todo-листе.
+servers:
+  - url: https://example.com/api
+    description: Основной сервер API
+
+paths:
+  /todos:
+    get:
+      summary: Получить список задач
+      description: Возвращает список всех задач.
+      responses:
+        '200':
+          description: Список задач успешно получен.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Todo'
+    post:
+      summary: Добавить новую задачу
+      description: Создает новую задачу в списке.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                title:
+                  type: string
+                  example: "New task"
+                  description: Название задачи.
+      responses:
+        '201':
+          description: Задача успешно добавлена.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Todo'
+
+  /todos/{id}:
+    put:
+      summary: Обновить задачу
+      description: Изменяет данные существующей задачи (например, статус выполнения).
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: Уникальный идентификатор задачи.
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                completed:
+                  type: boolean
+                  description: Указывает, выполнена ли задача.
+      responses:
+        '200':
+          description: Задача успешно обновлена.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Todo'
+
+    delete:
+      summary: Удалить задачу
+      description: Удаляет задачу из списка.
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: Уникальный идентификатор задачи.
+          schema:
+            type: integer
+      responses:
+        '204':
+          description: Задача успешно удалена. Тело ответа отсутствует.
+
+components:
+  schemas:
+    Todo:
+      type: object
+      properties:
+        id:
+          type: integer
+          example: 1
+          description: Уникальный идентификатор задачи.
+        title:
+          type: string
+          example: "Sample task"
+          description: Название задачи.
+        completed:
+          type: boolean
+          example: false
+          description: Указывает, выполнена ли задача.
